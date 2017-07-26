@@ -24,7 +24,7 @@ class MathResources:
         :param k: number of
         :return:
         """
-        value = 1 / (1 + exp(-2 * hypo_value))
+        value = 1 / (1 + exp(-1/100 * hypo_value))
         if math.isnan(value):
             print("Error")
         return value
@@ -54,8 +54,6 @@ class MathResources:
     @staticmethod
     def log_reg(data: ndarray, target: ndarray, beta: ndarray, alfa) -> ndarray:
         """
-        Learn can can not be updated during one column learning.
-        We can return list of grads with beta
         :param data:
         :param target:
         :param beta:
@@ -81,25 +79,30 @@ class MathResources:
     @staticmethod
     def get_grad(data: ndarray, target: ndarray, beta: ndarray) -> ndarray:
         """
-        Compute gradient value only for one column
+        Compute partial gradients for all parameters.
         :param data:
         :param target:
         :param beta:
-        :return: ndarray of params gradients
+        :return: ndarray of gradients params
         """
         m, n = shape(data)
         if len(data) != len(target):
             raise ValueError("ndarrays shape not equal!")
         # for each column(param)
-        grads = array([0] * n)
+        grads = array([0.0] * n)
         for j in range(n):
             grad = 0
-            for m in range(m):
-                est_prop = MathResources.get_log_res_func(MathResources.get_hypo_value(data[m], beta))
+            for i in range(m):
+                est_prop = MathResources.get_log_res_func(MathResources.get_hypo_value(data[i], beta))
                 if math.isnan(est_prop):
                     est_prop = 1
-                grad += (est_prop - target[m]) * data[m, j]
-            grads[j] = grad
+                grad += (est_prop - target[i]) * data[i, j]
+                if grad == 0:
+                    print("")
+            value = grad / m
+            if value == nan:
+                print("messsage")
+            grads[j] = value
         return grads
 
 

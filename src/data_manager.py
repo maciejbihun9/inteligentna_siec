@@ -5,6 +5,12 @@ from sklearn import linear_model, datasets, model_selection
 
 
 class DataManager:
+    """
+    Data Manager job is to load entire data.
+    Data Manager does not care about what kind of data actually exists in dataset.
+    We can remove unused data items during specific logistic regression problem.
+    We should not use here any patterns that not load specific signs.
+    """
 
     @staticmethod
     def load_data(url: str, miss_first_line: bool, do_convert: bool) -> list:
@@ -20,7 +26,7 @@ class DataManager:
                 next(file)
             data = []
             for line in file.readlines():
-                line_elements = line.strip().split(" ")
+                line_elements = line.strip().split(",")
                 data_item = []
                 for line_el_index in range(len(line_elements)):
                     item = line_elements[line_el_index]
@@ -86,3 +92,23 @@ class DataManager:
         :return: X_train, X_test, y_train, y_test ndarrays.
         """
         return model_selection.train_test_split(inputs, target, test_size=test_size, random_state=random_state)
+
+    @staticmethod
+    def data_filter(data: ndarray, filter_sign: str) -> ndarray:
+        """
+        Removes all rows that contains filter_sign.
+        :param filter_sign:
+        :return: New ndarray without unneeded data items(rows)
+        """
+        m, n = shape(data)
+        inds_to_remove = []
+        for i in range(m):
+            for j in range(n):
+                if data[i, j].strip() == filter_sign:
+                    inds_to_remove.append(i)
+                    break
+        filtered_data = delete(data, inds_to_remove, 0)
+        return array(filtered_data)
+
+
+

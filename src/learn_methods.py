@@ -32,10 +32,10 @@ class LearnMethod:
             curr_grad = MathResources.get_grad(input, target, beta)
 
             curr_Eg2 = ro * prev_Eg2 + (1 - ro) * pow(curr_grad, 2)
-            print("curr_Eg2: {}".format(curr_Eg2))
+            # print("curr_Eg2: {}".format(curr_Eg2))
 
             curr_rms_Eg2 = sqrt(curr_Eg2 + epsilon)
-            print("curr_rms_Eg2: {}".format(curr_rms_Eg2))
+            # print("curr_rms_Eg2: {}".format(curr_rms_Eg2))
 
             curr_delta = -(prev_rms_delta / curr_rms_Eg2) * curr_grad
 

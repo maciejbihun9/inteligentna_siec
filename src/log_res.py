@@ -7,7 +7,7 @@ from sklearn import linear_model, datasets, model_selection
 from src.credibility import Credibility
 from numpy.linalg import *
 from src.learn_methods import LearnMethod
-
+from src.error_msg import ErrorMsg
 
 """
 * Implement it using mathematical patterns
@@ -46,15 +46,20 @@ class LogRes:
         """
         m, n = shape(self.train_inputs)
 
-        alfa = 5.1
-        rate = 0.001
+        alfa = 0.001
+        rate = 0.5
         beta = MathResources.get_init_beta(n)
         prev_cost = inf
         new_beta = beta
+        grads = []
         while prev_cost > error:
-            beta = MathResources.log_reg(self.train_inputs, self.train_target, new_beta, alfa)
+            grad = MathResources.get_grad(self.train_inputs, self.train_target, beta)
+            grads.append(grad)
+            delta = LearnMethod.adagrad(alfa, array(grad), array(grads))
+            beta -= delta
+
+            # beta = MathResources.log_reg(self.train_inputs, self.train_target, new_beta, alfa)
             cost = MathResources.get_cost_func_value(self.train_inputs, self.train_target, beta)
-            rate = LearnMethod.a
             if prev_cost < cost:
                 alfa -= alfa * rate
                 print("current cost: {}".format(cost))
@@ -73,12 +78,16 @@ class LogRes:
         self.beta = LearnMethod.adadelta(self.train_inputs, self.train_target, 0.4)
 
 
-    def test_fit(self) -> float:
+    def fit_test(self) -> float:
         """
         Fit trained betas with examples.
         Return the results as lit of tuples.
         :return:
         """
+
+        if self.beta == None:
+            raise ValueError(ErrorMsg.BETA_NOT_INITIALIZED)
+
         results = []
         for i in range(len(self.test_inputs)):
             result = sum(self.test_inputs[i] * self.beta)
@@ -100,32 +109,3 @@ class LogRes:
 
 
 
-url = '../resources/german_data.txt'
-data = DataManager.load_data(url, False, False)
-
-categorical_mask = [True, False, True, True, False, True, True, False, True, True, False, True, False, True, True, False, True, False, True, True]
-
-inputs = array([x[:19] for x in data])
-target = array([y[20] for y in data])
-target = array([0 if y == '2' else 1 for y in target])
-# decode labeled data to numerical values
-inputs = DataManager.categorize_data(inputs, categorical_mask)
-
-# we can not normalize data that was hot encoded to numerical values
-# here we assume that all data is already in numerical type
-inputs = Normalizer.normalize(inputs.astype(float), NormType.stand_norm, [0, 1, 2, 3, 4, 5, 6])
-
-X_train, X_test, y_train, y_test = DataManager.train_test_split(inputs, target, test_size=0.4, random_state=0)
-
-
-log_res = LogRes(X_train, y_train, X_test, y_test)
-results = log_res.adagrad_fit()
-log_res.test_fit()
-print(results)
-
-
-"""
-logreg = linear_model.LogisticRegression(tol=1e-10)
-logreg.fit(X_train,y_train)
-print(logreg.coef_)
-"""
