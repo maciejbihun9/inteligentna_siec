@@ -13,7 +13,7 @@ class DataManager:
     """
 
     @staticmethod
-    def load_data(url: str, miss_first_line: bool, do_convert: bool) -> list:
+    def load_data(url: str, miss_first_line: bool, do_convert: bool, split_sign: str) -> list:
         """
         :param url: file to parse url
         :param miss_first_line: miss first line bool value
@@ -26,7 +26,7 @@ class DataManager:
                 next(file)
             data = []
             for line in file.readlines():
-                line_elements = line.strip().split(",")
+                line_elements = line.strip().split(split_sign)
                 data_item = []
                 for line_el_index in range(len(line_elements)):
                     item = line_elements[line_el_index]

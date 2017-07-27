@@ -24,7 +24,7 @@ class LogRes:
         self.train_target = train_target
         self.test_inputs = test_inputs
         self.test_target = test_target
-        self.beta = None
+        self.beta = array([])
 
     def least_square_fit(self):
         """
@@ -46,32 +46,30 @@ class LogRes:
         """
         m, n = shape(self.train_inputs)
 
-        alfa = 0.001
-        rate = 0.5
+        alfa = 0.000001
+        rate = 0.01
         beta = MathResources.get_init_beta(n)
         prev_cost = inf
-        new_beta = beta
         grads = []
         while prev_cost > error:
             grad = MathResources.get_grad(self.train_inputs, self.train_target, beta)
             grads.append(grad)
             delta = LearnMethod.adagrad(alfa, array(grad), array(grads))
-            beta -= delta
-
+            beta += delta
             # beta = MathResources.log_reg(self.train_inputs, self.train_target, new_beta, alfa)
             cost = MathResources.get_cost_func_value(self.train_inputs, self.train_target, beta)
-            if prev_cost < cost:
+            """if prev_cost < cost:
                 alfa -= alfa * rate
                 print("current cost: {}".format(cost))
                 print("prev cost: {}".format(prev_cost))
                 print("alfa : {}".format(alfa))
                 continue
+            """
             prev_cost = copy(cost)
-            new_beta = copy(beta)
             print("Cost: {}".format(cost))
         print("Final cost : {}".format(prev_cost))
         print("Final beta: {}".format(beta))
-        self.beta = new_beta
+        self.beta = beta
 
 
     def adadelta_fit(self):
@@ -84,8 +82,7 @@ class LogRes:
         Return the results as lit of tuples.
         :return:
         """
-
-        if self.beta == None:
+        if len(self.beta) == 0:
             raise ValueError(ErrorMsg.BETA_NOT_INITIALIZED)
 
         results = []

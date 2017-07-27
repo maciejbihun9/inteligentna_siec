@@ -15,14 +15,18 @@ url = '../../resources/50k.txt'
 data = DataManager.load_data(url, False, False)
 data = array(data)
 
+# filter
+no_item_sign = '?'
+data = DataManager.data_filter(data, no_item_sign)
+
 categorical_mask = [False, True, False, True, False, True, True, True, True, True, False, False, False, True]
 
-no_item_sign = '?'
 inputs = data[0:1000, 0:14]
-target = data[0:1000, 14]
-target = array([0 if y == '<=50' else 1 for y in target])
-# <=50K, >50K
 
+# filter data
+
+target = data[0:1000, 14]
+target = array([0 if '<=50' in y else 1 for y in target])
 
 # decode labeled data to numerical values
 print("Categorizing...")

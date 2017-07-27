@@ -61,6 +61,7 @@ class LearnMethod:
     def adagrad(alfa: float, cur_grad: ndarray, prev_grads: ndarray) -> ndarray:
         """
         Method should return ndarray of params delta.
+        Method has been checked against zero values.
         :param alfa: constant learning rate
         :param cur_grad: current gradient ndarray
         :param prev_grads: ndarray of previous gradients
@@ -68,4 +69,11 @@ class LearnMethod:
         """
         pow_grads = pow(prev_grads, 2)
         sum_grads = sum(pow_grads, axis = 0)
-        return -(alfa / (sqrt(sum_grads))) * cur_grad
+        coeff = MathResources.div_arr(alfa, (sqrt(sum_grads)))
+        length = len(coeff)
+        results = array([0.0] * length)
+        for i in range(len(coeff)):
+            val1 = round(float(coeff[i]), 4)
+            val2 = round(float(cur_grad[i]), 4)
+            results[i] = val1 * val2
+        return -results

@@ -35,7 +35,7 @@ class MathResources:
         :param num: Number of betas to return
         :return: ndarray of float values
         """
-        return (2.5 * random.randn(1, num) + 3)[0]
+        return (0.5 * random.randn(1, num) + 1)[0]
 
 
     @staticmethod
@@ -97,14 +97,22 @@ class MathResources:
                 if math.isnan(est_prop):
                     est_prop = 1
                 grad += (est_prop - target[i]) * data[i, j]
-                if grad == 0:
-                    print("")
             value = grad / m
             if value == nan:
                 print("messsage")
             grads[j] = value
         return grads
 
+    @staticmethod
+    def div_arr(arr1: ndarray, arr2: ndarray) -> ndarray:
 
+        with errstate(divide='ignore', invalid='ignore'):
+            c = true_divide(arr1, arr2)
+            c[c == inf] = 0
+            c = nan_to_num(c)
+            return c
 
-
+    @staticmethod
+    def multiply(a: float, b: float):
+        value = a * b
+        return value

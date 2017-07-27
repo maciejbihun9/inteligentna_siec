@@ -27,13 +27,20 @@ class Credibility:
 
     def get_specificity(self):
         N = self.TN + self.FP
+        if N == 0:
+            return 0
         return self.TN/N
 
     def get_sensitivity(self):
         P = self.TP + self.FN
+        if P == 0:
+            return 0
         return self.TP / P
 
     def get_precision(self):
+        value = (self.TP + self.FP)
+        if value == 0:
+            return 0
         return self.TP / (self.TP + self.FP)
 
     def get_accuracy(self):
@@ -42,6 +49,8 @@ class Credibility:
         return (self.TP + self.TN) / (P + N)
 
     def get_f_score(self):
+        if self.get_accuracy() == 0:
+            return 0
         return self.get_precision() / self.get_accuracy()
 
     def get_error_mat(self):

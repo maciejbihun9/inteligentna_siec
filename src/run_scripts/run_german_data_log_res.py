@@ -5,8 +5,9 @@ from src.norm_type import NormType
 from src.normalizer import Normalizer
 from src.log_res import LogRes
 
-url = '../resources/german_data.txt'
-data = DataManager.load_data(url, False, False)
+url = '../../resources/german_data.txt'
+split_sign = " "
+data = DataManager.load_data(url, False, False, split_sign)
 
 categorical_mask = [True, False, True, True, False, True, True, False, True, True, False, True, False, True, True, False, True, False, True, True]
 
