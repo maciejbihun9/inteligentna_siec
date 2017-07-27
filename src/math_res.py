@@ -24,7 +24,7 @@ class MathResources:
         :param k: number of
         :return:
         """
-        value = 1 / (1 + exp(-1/100 * hypo_value))
+        value = 1 / (1 + exp(-3 * hypo_value))
         if math.isnan(value):
             print("Error")
         return value
@@ -49,7 +49,7 @@ class MathResources:
                 suma += (1 - target[i]) * log(1 - hypo_value)
             else:
                 suma += target[i] * log(hypo_value)
-        return (1/m) * suma
+        return (1/(2 * m)) * suma
 
     @staticmethod
     def log_reg(data: ndarray, target: ndarray, beta: ndarray, alfa) -> ndarray:
@@ -66,12 +66,12 @@ class MathResources:
         # for each param
         for j in range(n):
             grad = 0
-            for m in range(m):
-                est_prop = MathResources.get_log_res_func(MathResources.get_hypo_value(data[m], beta))
+            for i in range(m):
+                est_prop = MathResources.get_log_res_func(MathResources.get_hypo_value(data[i], beta))
                 if math.isnan(est_prop):
                     est_prop = 1
 
-                grad += (est_prop - target[m]) * data[m, j]
+                grad += (est_prop - target[i]) * data[i, j]
             beta[j] = beta[j] - (alfa * (grad / m))
         return beta
 

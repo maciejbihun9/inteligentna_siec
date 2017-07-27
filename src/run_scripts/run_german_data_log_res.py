@@ -25,7 +25,8 @@ X_train, X_test, y_train, y_test = DataManager.train_test_split(inputs, target, 
 
 
 log_res = LogRes(X_train, y_train, X_test, y_test)
-results = log_res.adagrad_fit()
+error = 0.001
+results = log_res.grad_desc_fit(error)
 log_res.fit_test()
 print(results)
 

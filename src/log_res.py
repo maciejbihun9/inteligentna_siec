@@ -36,6 +36,41 @@ class LogRes:
         self.train_target = mat(self.train_target)
         self.beta = inv(self.train_inputs.T * self.train_inputs) * self.train_inputs.T * self.train_target.T
 
+    def grad_desc_fit(self, error):
+        """
+                In this class we perform only computations aspect. Prepare data should be moved to data_manager.
+                :param inputs:
+                :param target:
+                :param categorical_mask:
+                :return:
+                """
+        m, n = shape(self.train_inputs)
+        alfa = 0.5
+        rate = 0.01
+        beta = MathResources.get_init_beta(n)
+        prev_beta = beta
+        prev_cost = inf
+        while prev_cost > error:
+            beta = MathResources.log_reg(self.train_inputs, self.train_target, beta, alfa)
+            cost = MathResources.get_cost_func_value(self.train_inputs, self.train_target, beta)
+            if prev_cost < cost:
+                beta = copy(prev_beta)
+                alfa -= alfa * rate
+                margin = cost - prev_cost
+                print("prev cost: {}".format(prev_cost))
+                print("Alfa : {}".format(alfa))
+                print("Cost - prev_cost margin: {}".format(margin))
+                continue
+            prev_beta = copy(beta)
+            prev_cost = copy(cost)
+            print("Cost : {}".format(cost))
+
+        print("Final cost : {}".format(prev_cost))
+        print("Final beta: {}".format(beta))
+        self.beta = beta
+
+
+
     def adagrad_fit(self, error=0.001):
         """
         In this class we perform only computations aspect. Prepare data should be moved to data_manager.
@@ -46,8 +81,7 @@ class LogRes:
         """
         m, n = shape(self.train_inputs)
 
-        alfa = 0.000001
-        rate = 0.01
+        alfa = 0.3
         beta = MathResources.get_init_beta(n)
         prev_cost = inf
         grads = []
@@ -58,13 +92,9 @@ class LogRes:
             beta += delta
             # beta = MathResources.log_reg(self.train_inputs, self.train_target, new_beta, alfa)
             cost = MathResources.get_cost_func_value(self.train_inputs, self.train_target, beta)
-            """if prev_cost < cost:
-                alfa -= alfa * rate
-                print("current cost: {}".format(cost))
-                print("prev cost: {}".format(prev_cost))
-                print("alfa : {}".format(alfa))
-                continue
-            """
+            if prev_cost < cost:
+                print("Final cost: {}".format(cost))
+                break
             prev_cost = copy(cost)
             print("Cost: {}".format(cost))
         print("Final cost : {}".format(prev_cost))
